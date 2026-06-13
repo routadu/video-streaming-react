@@ -1,0 +1,171 @@
+.page {
+  min-height: calc(100vh - var(--appbar-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-md);
+  background: radial-gradient(ellipse at top center, rgba(255, 0, 0, 0.04) 0%, transparent 60%);
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: fadeInScale 0.3s ease forwards;
+}
+
+/* Header */
+.header {
+  padding: var(--space-2xl) var(--space-2xl) var(--space-lg);
+  text-align: center;
+  border-bottom: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.04) 0%, transparent 100%);
+}
+
+.logoWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-md);
+  filter: drop-shadow(0 0 16px rgba(255, 0, 0, 0.35));
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Form */
+.form {
+  padding: var(--space-xl) var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Name row */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+/* General error */
+.generalError {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--error);
+}
+
+/* Eye button */
+.eyeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 2px;
+  transition: color var(--transition-fast);
+}
+
+.eyeBtn:hover {
+  color: var(--text-primary);
+}
+
+/* Password strength */
+.strengthWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.strengthBars {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.strengthSegment {
+  height: 4px;
+  flex: 1;
+  border-radius: var(--radius-full);
+  transition: background-color 0.3s ease;
+}
+
+.strengthLabel {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: right;
+  transition: color 0.3s ease;
+}
+
+/* Footer */
+.footer {
+  padding: var(--space-lg) var(--space-2xl);
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.footerText {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.footerLink {
+  color: var(--accent-primary);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  color: var(--accent-secondary);
+  text-decoration: underline;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.97) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (max-width: 520px) {
+  .card {
+    border-radius: var(--radius-lg);
+  }
+  .form {
+    padding: var(--space-lg) var(--space-lg);
+  }
+  .header {
+    padding: var(--space-xl) var(--space-lg) var(--space-md);
+  }
+  .footer {
+    padding: var(--space-md) var(--space-lg);
+  }
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
