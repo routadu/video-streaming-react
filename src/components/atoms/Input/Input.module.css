@@ -38,6 +38,15 @@
   box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.2);
 }
 
+.inputWrapper.hasSuccess {
+  border-color: var(--success);
+}
+
+.inputWrapper.hasSuccess:focus-within {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.15);
+}
+
 .input {
   flex: 1;
   background: transparent;
@@ -87,4 +96,13 @@
   font-size: 12px;
   color: var(--text-muted);
   margin: 0;
+}
+
+.hintSuccess {
+  font-size: 12px;
+  color: var(--success);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

@@ -20,10 +20,23 @@ const AtIcon = () => (
   </svg>
 );
 
+const EmailIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
+
 const LockIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
   </svg>
 );
 
@@ -84,10 +97,13 @@ const Register = () => {
     firstName: '',
     lastName: '',
     username: '',
+    email: '',
     password: '',
+    confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -119,6 +135,21 @@ const Register = () => {
       errs.username = 'Username can only contain letters, numbers and underscores';
     }
 
+    if (!formData.email.trim()) {
+      errs.email = 'Email is required';
+    } else {
+      const email = formData.email.trim();
+      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+      const hasConsecutiveDots = /\.{2,}/.test(email);
+      const localPart = email.split('@')[0];
+      const domainPart = email.split('@')[1] || '';
+      const localStartsOrEndsWithDot = localPart.startsWith('.') || localPart.endsWith('.');
+      const domainStartsOrEndsWithDot = domainPart.startsWith('.') || domainPart.endsWith('.');
+      if (!emailRegex.test(email) || hasConsecutiveDots || localStartsOrEndsWithDot || domainStartsOrEndsWithDot) {
+        errs.email = 'Please enter a valid email address';
+      }
+    }
+
     if (!formData.password) {
       errs.password = 'Password is required';
     } else if (formData.password.length < 8 || formData.password.length > 15) {
@@ -131,12 +162,22 @@ const Register = () => {
       errs.password = 'Password must contain at least one number';
     }
 
+    if (!formData.confirmPassword) {
+      errs.confirmPassword = 'Please confirm your password';
+    } else if (formData.confirmPassword !== formData.password) {
+      errs.confirmPassword = 'Passwords do not match';
+    }
+
     return errs;
   };
 
   const handleChange = (field) => (e) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: '' }));
+    // When password changes, re-check confirmPassword error live
+    if (field === 'password' && errors.confirmPassword) {
+      setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -153,6 +194,7 @@ const Register = () => {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         username: formData.username.trim(),
+        email: formData.email.trim(),
         password: formData.password,
       });
       toast.success('Account created successfully! Please sign in.');
@@ -166,6 +208,14 @@ const Register = () => {
       setLoading(false);
     }
   };
+
+  // Green success hint when passwords match
+  const confirmMatchHint =
+    formData.confirmPassword &&
+    !errors.confirmPassword &&
+    formData.confirmPassword === formData.password
+      ? 'Passwords match'
+      : undefined;
 
   return (
     <div className={styles.page}>
@@ -202,6 +252,7 @@ const Register = () => {
             </div>
           )}
 
+          {/* First name & Last name */}
           <div className={styles.row}>
             <Input
               label="First name"
@@ -225,6 +276,7 @@ const Register = () => {
             />
           </div>
 
+          {/* Username */}
           <Input
             label="Username"
             type="text"
@@ -237,6 +289,19 @@ const Register = () => {
             autoComplete="username"
           />
 
+          {/* Email */}
+          <Input
+            label="Email address"
+            type="email"
+            placeholder="you@example.com"
+            value={formData.email}
+            onChange={handleChange('email')}
+            error={errors.email}
+            leftIcon={<EmailIcon />}
+            autoComplete="email"
+          />
+
+          {/* Password */}
           <div>
             <Input
               label="Password"
@@ -260,6 +325,31 @@ const Register = () => {
               autoComplete="new-password"
             />
             <PasswordStrengthBar password={formData.password} />
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <Input
+              label="Confirm password"
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="Re-enter your password"
+              value={formData.confirmPassword}
+              onChange={handleChange('confirmPassword')}
+              error={errors.confirmPassword}
+              leftIcon={<ShieldIcon />}
+              hintSuccess={confirmMatchHint}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((p) => !p)}
+                  className={styles.eyeBtn}
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
+                  <EyeIcon show={showConfirmPassword} />
+                </button>
+              }
+              autoComplete="new-password"
+            />
           </div>
 
           <Button
